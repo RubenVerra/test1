@@ -1,23 +1,15 @@
 FROM ubuntu:latest
-name: Build and Push Docker Image
 
-on:
-  push:
-    branches:
-    - main
+COPY . .
 
-jobs:
-  build-and-push:
-    runs-on: ubuntu-latest
+RUN apt-get update && apt-get -y --no-install-recommends install \
+    build-essential \
+    openjdk-8-jdk \
+    openjdk-8-jre-headless \
+    maven
+    
+RUN cd /OpenRemote && mvn clean install -DskipTests 
 
-    steps:
-    - name: Checkout code
-      uses: actions/checkout@v2
+EXPOSE 8080
 
-    - name: Build and push Docker image
-      uses: docker/build-push-action@v2
-      with:
-        context: .
-        push: true
-        tags: rubenverra/:latest
-
+CMD ["java", "-jar", "/OpenRemote/target/openremote-controller-3.8.1-SNAPSHOT.jar"]
