@@ -1,3 +1,22 @@
-FROM openremote/controller:latest
-COPY openremote.config.xml /usr/local/openremote/webapps/controller/WEB-INF/conf/openremote.config.xml
-EXPOSE 8080
+name: Build and Push Docker Image
+
+on:
+  push:
+    branches:
+    - main
+
+jobs:
+  build-and-push:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v2
+
+    - name: Build and push Docker image
+      uses: docker/build-push-action@v2
+      with:
+        context: .
+        push: true
+        tags: your_username/your_repo:latest
+
