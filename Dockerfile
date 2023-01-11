@@ -1,3 +1,4 @@
+FROM ubuntu:latest
 name: Build and Push Docker Image
 
 on:
