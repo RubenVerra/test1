@@ -1,0 +1,28 @@
+name: Build and Push Docker Image
+
+on:
+  push:
+    branches:
+    - main
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v2
+    - name: Build Docker image
+      run: |
+        docker build -t myopenremote .
+        echo "${{ secrets.DOCKER_PASSWORD }}" | docker login -u "${{ secrets.DOCKER_USERNAME }}" --password-stdin
+    - name: Test the container
+      run: |
+        ID=$(docker create myopenremote)
+        docker start "$ID"
+        sleep 10
+        docker exec "$ID" curl -Is http://localhost:8080 | grep "200 OK"
+        docker stop "$ID"
+        docker rm "$ID"
+    - name: Push the image
+      run: |
+        docker push myopenremote
