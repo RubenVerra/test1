@@ -18,5 +18,5 @@ jobs:
       with:
         context: .
         push: true
-        tags: your_username/your_repo:latest
+        tags: rubenverra/:latest
 
